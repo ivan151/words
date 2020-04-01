@@ -132,7 +132,7 @@ def whether_exists(word):
             else:
                 return False
     elif lang == 'ru':
-        word = word.lower() + '\n'
+        word = word.lower()
         with open('words/rus.txt', 'r') as file:
             words = file.readlines()
             if word in words:
@@ -201,7 +201,7 @@ def telegram_webhook():
                     # game begins, timer is started
                     mins = 0
                     while mins < 5:
-                        bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word,mins))
+                        bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word, mins))
                         time.sleep(5)
                         mins += 1
                     else:
