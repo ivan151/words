@@ -133,7 +133,7 @@ def whether_exists(word):
                 return False
     elif lang == 'ru':
         word = word.lower() + '\n'
-        with open('words/words.txt', 'r') as file:
+        with open('words/rus.txt', 'r') as file:
             words = file.readlines()
             if word in words:
                 return True
