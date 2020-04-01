@@ -5,6 +5,7 @@ import urllib3
 import time
 from openpyxl import Workbook, load_workbook
 import os.path
+from langdetect import detect
 
 # import datetime
 
@@ -119,14 +120,25 @@ def right_word(chat_id, word):
     else:
         return False
 
+
 def whether_exists(word):
-    word = word.lower() + '\n'
-    with open('words/words.txt', 'r') as file:
-        words = file.readlines()
-        if word in words:
-            return True
-        else:
-            return False
+    lang = detect(word)
+    if lang == 'en':
+        word = word.lower() + '\n'
+        with open('words/words.txt', 'r') as file:
+            words = file.readlines()
+            if word in words:
+                return True
+            else:
+                return False
+    elif lang == 'ru':
+        word = word.lower() + '\n'
+        with open('words/words.txt', 'r') as file:
+            words = file.readlines()
+            if word in words:
+                return True
+            else:
+                return False
 
 
 def inter(words):
@@ -135,7 +147,9 @@ def inter(words):
     b = values[1]
     da = dict((e[::-1] for e in a))
     db = dict((e[::-1] for e in b))
-    intersection_list = [[max(da[k], db[k]), k] for k in set(da).intersection(db)]
+    intersection_list = [
+            [max(da[k], db[k]), k] for k in set(da).intersection(db)
+            ]
     return intersection_list
 
 
@@ -157,14 +171,14 @@ def telegram_webhook():
     update = request.get_json()
     if "message" in update:
         chat_id = update["message"]["chat"]["id"]
-        #user_id = update['message']['from']['id']
+        # user_id = update['message']['from']['id']
         user_name = update['message']['from']['username']
         if os.path.isfile(f'words/{chat_id}' + '.xlsx'):
             if "text" in update["message"]:
                 text = update["message"]["text"]
                 time_info = update["message"]["date"]
 
-                if "/start" in text:
+                if "/starteng" in text:
                     # bot gives a word to players
                     word = random_word('words/long_words.txt')
                     insert_start_time(chat_id, word)
@@ -179,11 +193,26 @@ def telegram_webhook():
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
 
+                if "/startrus" in text:
+                    # bot gives a word to players
+                    word = random_word('words/long_words_rus.txt')
+                    insert_start_time(chat_id, word)
+                    bot.sendMessage(chat_id, "{}".format(word))
+                    # game begins, timer is started
+                    mins = 0
+                    while mins < 5:
+                        bot.sendMessage(chat_id, '>>>>>{}'.format(mins))
+                        time.sleep(5)
+                        mins += 1
+                    else:
+                        insert_stop_time(chat_id, word)
+                        bot.sendMessage(chat_id, 'Time is over!')
                 elif text == '/result':
                     try:
                         words = get_result(chat_id)
                         if len(words) < 2:
-                            bot.sendMessage(chat_id, "You don't have a result, because you don't have a partner!")
+                            bot.sendMessage(chat_id, '''You don't have a result, 
+                                            because you don't have a partner!''')
                         elif len(words) > 2:
                             bot.sendMessage(chat_id, "This game created only for two players!")
                         else:
@@ -211,7 +240,11 @@ def telegram_webhook():
                                 for word in suitable_and_existing:
                                     points += len(word)
                                 bot.sendMessage(chat_id,
-                                                "Player: {player} | Correct words: {correct}  |  Not nested words: {not_nested} | Doesn't exist: {doesnt} |  Duplicates: {dup} | Points: {p}".format(
+                                                '''Player: {player} | Correct words: {correct}  
+                                                |  Not nested words: {not_nested} 
+                                                | Doesn't exist: {doesnt} 
+                                                |  Duplicates: {dup} 
+                                                | Points: {p}'''.format(
                                                    player = key,
                                                    correct = ' '.join(map(str, suitable_and_existing)),
                                                    not_nested = ' '.join(map(str, unsuitable_words)),
