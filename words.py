@@ -186,7 +186,7 @@ def telegram_webhook():
                     # game begins, timer is started
                     mins = 0
                     while mins < 5:
-                        bot.sendMessage(chat_id, '>>>>>{}'.format(mins))
+                        bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word,mins))
                         time.sleep(5)
                         mins += 1
                     else:
@@ -201,7 +201,7 @@ def telegram_webhook():
                     # game begins, timer is started
                     mins = 0
                     while mins < 5:
-                        bot.sendMessage(chat_id, '>>>>>{}'.format(mins))
+                        bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word,mins))
                         time.sleep(5)
                         mins += 1
                     else:
@@ -240,7 +240,8 @@ def telegram_webhook():
                                 for word in suitable_and_existing:
                                     points += len(word)
                                 bot.sendMessage(chat_id,
-                                                '''Player: {player} | Correct words: {correct}  
+                                                '''Player: {player} 
+                                                | Correct words: {correct}  
                                                 |  Not nested words: {not_nested} 
                                                 | Doesn't exist: {doesnt} 
                                                 |  Duplicates: {dup} 
