@@ -210,7 +210,7 @@ def telegram_webhook():
                     else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
-                        @app.route('/{}'.format(secret), methods=["GET"])   
+                        @app.route('/done', methods=["GET"])   
                         def done():
                             return "Done"
                          
