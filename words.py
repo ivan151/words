@@ -125,20 +125,21 @@ def whether_exists(word):
     lang = detect(word)
     if lang == 'en':
         word = word.lower() + '\n'
-        with open('words/words.txt', 'r') as file:
+        with open('words.txt', 'r') as file:
             words = file.readlines()
             if word in words:
-                return True
+                return (True, word)
             else:
-                return False
-    elif lang == 'ru':
-        word = word.lower()
-        with open('words/rus.txt', 'r') as file:
+                return (False, word)
+    else:
+        word = word.lower() + '\n'
+        with open('rus.txt', 'r') as file:
             words = file.readlines()
+            print(words[:40])
             if word in words:
-                return True
+                return (True, word)
             else:
-                return False
+                return (False, word)
 
 
 def inter(words):
