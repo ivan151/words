@@ -206,9 +206,9 @@ def telegram_webhook():
                     mins = 0
                     while mins < 5:
                         bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word, mins))
-                        time.sleep(5)
+                        time.sleep(60)
                         mins += 1
-                    else:
+         guyguguygyugyu           else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
                         return "OK"
