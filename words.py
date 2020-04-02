@@ -194,8 +194,7 @@ def telegram_webhook():
                     else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
-                        
-      """"""""""""""""""""""""""""""""""""""""""""""""""""                  
+
 
                 if "/startrus" in text:
                     # bot gives a word to players
@@ -206,12 +205,14 @@ def telegram_webhook():
                     mins = 0
                     while mins < 5:
                         bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word, mins))
-                        time.sleep(60)
+                        time.sleep(30)
                         mins += 1
                     else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
-                        text = "Done"
+                        @app.route('/{}'.format(secret), methods=["GET"])   
+                        def done():
+                            return "Done"
                          
                     
                 elif text == '/result':
