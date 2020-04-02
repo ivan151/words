@@ -200,15 +200,8 @@ def telegram_webhook():
                     word = random_word('words/long_words_rus.txt')
                     insert_start_time(chat_id, word)
                     bot.sendMessage(chat_id, "{}".format(word))
-                    # game begins, timer is started
-                    mins = 0
-                    while mins < 5:
-                        bot.pinChatMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word, mins))
-                        time.sleep(30)
-                        mins += 1
-                    else:
-                        insert_stop_time(chat_id, word)
-                        bot.sendMessage(chat_id, 'Time is over!')
+
+                    
                     
                 elif text == '/result':
                     try:
