@@ -72,7 +72,7 @@ def insert_start_time(chat_id, word):
     wb.save(filename=file_name)
 
 
-def insert_stop_time(chat_id, word):
+def insert_stop_time(chat_id):
     file_name = f'words/{chat_id}' + '.xlsx'
     stop_time = time.time()
     wb = load_workbook(file_name)
@@ -89,7 +89,6 @@ def get_result(chat_id):
     start_time = int(sheet2[sheet2.max_row][1].value)
     stop_time = int(sheet2[sheet2.max_row][2].value)
     word_time = sheet['C']
-    #cold = sheet['D']
     words = {}
     for cell in word_time:
         if cell.value in range(start_time,stop_time):
@@ -184,15 +183,6 @@ def telegram_webhook():
                     word = random_word('words/long_words.txt')
                     insert_start_time(chat_id, word)
                     bot.sendMessage(chat_id, "{}".format(word))
-                    # game begins, timer is started
-                    mins = 0
-                    while mins < 5:
-                        bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word,mins))
-                        time.sleep(60)
-                        mins += 1
-                    else:
-                        insert_stop_time(chat_id, word)
-                        bot.sendMessage(chat_id, 'Time is over!')
 
 
                 if "/startrus" in text:
@@ -201,13 +191,12 @@ def telegram_webhook():
                     insert_start_time(chat_id, word)
                     bot.sendMessage(chat_id, "{}".format(word))
 
-                    
-                    
                 elif text == '/result':
+                    insert_stop_time(chat_id)
                     try:
                         words = get_result(chat_id)
                         if len(words) < 2:
-                            bot.sendMessage(chat_id, '''You don't have a result, because you don't have a partner!''')
+                            bot.sendMessage(chat_id, "You don't have a result, because you don't have a partner!")
                         elif len(words) > 2:
                             bot.sendMessage(chat_id, "This game created only for two players!")
                         else:
@@ -235,12 +224,12 @@ def telegram_webhook():
                                 for word in suitable_and_existing:
                                     points += len(word)
                                 bot.sendMessage(chat_id,
-                                                '''Player: {player} 
-                                                | Correct words: {correct}  
-                                                |  Not nested words: {not_nested} 
-                                                | Doesn't exist: {doesnt} 
-                                                |  Duplicates: {dup} 
-                                                | Points: {p}'''.format(
+                                                '''Player: {player}
+                                                 Correct words: {correct}
+                                                 Not nested words: {not_nested}
+                                                 Doesn't exist: {doesnt}
+                                                 Duplicates: {dup}
+                                                 Points: {p}'''.format(
                                                    player = key,
                                                    correct = ' '.join(map(str, suitable_and_existing)),
                                                    not_nested = ' '.join(map(str, unsuitable_words)),
