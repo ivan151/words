@@ -20,7 +20,7 @@ telepot.api._onetime_pool_spec = (
 secret = "odBabTAsR6XGawl54vfm1P9aU8A8hfCh"
 bot = telepot.Bot('1070561990:AAEsauHeiN-Yh31KeDZr9Y2gsz3SaX32Grw')
 bot.setWebhook("https://words151.pythonanywhere.com/{}".format(secret), max_connections=1)
-
+bot.setWebhook("https://words151.pythonanywhere.com/{}/done".format(secret), max_connections=1)
 
 # Takes a random word from file
 
@@ -194,7 +194,7 @@ def telegram_webhook():
                     else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
-"""""""""""""""""""""
+
 
                 if "/startrus" in text:
                     # bot gives a word to players
@@ -210,7 +210,9 @@ def telegram_webhook():
                     else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
-                         
+                        @app.route('/{}/done'.format(secret), methods=["POST"])
+                        def done():
+                            return "OK"
                     
                 elif text == '/result':
                     try:
