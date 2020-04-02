@@ -196,7 +196,7 @@ def telegram_webhook():
                         bot.sendMessage(chat_id, 'Time is over!')
                         sys.exit()
 
-                if "/startrus" in text:
+                '''if "/startrus" in text:
                     # bot gives a word to players
                     word = random_word('words/long_words_rus.txt')
                     insert_start_time(chat_id, word)
