@@ -194,7 +194,7 @@ def telegram_webhook():
                     else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
-                        return "OK"
+                        
                         
 
                 if "/startrus" in text:
@@ -208,17 +208,17 @@ def telegram_webhook():
                         bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word, mins))
                         time.sleep(60)
                         mins += 1
-         guyguguygyugyu           else:
+                    else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
-                        return "OK"
+                        text = "Done"
+                         
                     
                 elif text == '/result':
                     try:
                         words = get_result(chat_id)
                         if len(words) < 2:
-                            bot.sendMessage(chat_id, '''You don't have a result, 
-                                            because you don't have a partner!''')
+                            bot.sendMessage(chat_id, '''You don't have a result, because you don't have a partner!''')
                         elif len(words) > 2:
                             bot.sendMessage(chat_id, "This game created only for two players!")
                         else:
