@@ -7,7 +7,6 @@ from openpyxl import Workbook, load_workbook
 import os.path
 from langdetect import detect
 
-
 # import datetime
 
 proxy_url = "http://proxy.server:3128"
@@ -20,6 +19,7 @@ telepot.api._onetime_pool_spec = (
 secret = "odBabTAsR6XGawl54vfm1P9aU8A8hfCh"
 bot = telepot.Bot('1070561990:AAEsauHeiN-Yh31KeDZr9Y2gsz3SaX32Grw')
 bot.setWebhook("https://words151.pythonanywhere.com/{}".format(secret), max_connections=1)
+
 
 # Takes a random word from file
 
@@ -72,7 +72,7 @@ def insert_start_time(chat_id, word):
     wb.save(filename=file_name)
 
 
-def insert_stop_time(chat_id):
+def insert_stop_time(chat_id, word):
     file_name = f'words/{chat_id}' + '.xlsx'
     stop_time = time.time()
     wb = load_workbook(file_name)
@@ -89,6 +89,7 @@ def get_result(chat_id):
     start_time = int(sheet2[sheet2.max_row][1].value)
     stop_time = int(sheet2[sheet2.max_row][2].value)
     word_time = sheet['C']
+    #cold = sheet['D']
     words = {}
     for cell in word_time:
         if cell.value in range(start_time,stop_time):
@@ -124,21 +125,20 @@ def whether_exists(word):
     lang = detect(word)
     if lang == 'en':
         word = word.lower() + '\n'
-        with open('words.txt', 'r') as file:
+        with open('words/words.txt', 'r') as file:
             words = file.readlines()
             if word in words:
-                return (True, word)
+                return True
             else:
-                return (False, word)
+                return False
     else:
         word = word.lower() + '\n'
-        with open('rus.txt', 'r') as file:
+        with open('words/rus.txt', 'r') as file:
             words = file.readlines()
-            print(words[:40])
             if word in words:
-                return (True, word)
+                return True
             else:
-                return (False, word)
+                return False
 
 
 def inter(words):
@@ -163,6 +163,7 @@ def checker(user, words):
     return [user_words, duplicates]
 
 
+
 app = Flask(__name__)
 
 
@@ -184,19 +185,20 @@ def telegram_webhook():
                     insert_start_time(chat_id, word)
                     bot.sendMessage(chat_id, "{}".format(word))
 
-
                 if "/startrus" in text:
                     # bot gives a word to players
                     word = random_word('words/long_words_rus.txt')
                     insert_start_time(chat_id, word)
                     bot.sendMessage(chat_id, "{}".format(word))
+                    # game begins, timer is started
 
                 elif text == '/result':
-                    insert_stop_time(chat_id)
+                    insert_stop_time(chat_id, text)
                     try:
                         words = get_result(chat_id)
                         if len(words) < 2:
-                            bot.sendMessage(chat_id, "You don't have a result, because you don't have a partner!")
+                            bot.sendMessage(chat_id, '''You don't have a result,
+                                            because you don't have a partner!''')
                         elif len(words) > 2:
                             bot.sendMessage(chat_id, "This game created only for two players!")
                         else:
@@ -213,7 +215,7 @@ def telegram_webhook():
                                     if right_word(chat_id,word[1]):
                                             suitable_words.append(word[1])
                                     else:
-                                        unsuitable_words.append(word)
+                                        unsuitable_words.append(word[1])
                                 for word in suitable_words:
                                     if whether_exists(word):
                                         suitable_and_existing.append(word)
@@ -225,11 +227,11 @@ def telegram_webhook():
                                     points += len(word)
                                 bot.sendMessage(chat_id,
                                                 '''Player: {player}
-                                                 Correct words: {correct}
-                                                 Not nested words: {not_nested}
-                                                 Doesn't exist: {doesnt}
-                                                 Duplicates: {dup}
-                                                 Points: {p}'''.format(
+                                                | Correct words: {correct}
+                                                |  Not nested words: {not_nested}
+                                                | Doesn't exist: {doesnt}
+                                                |  Duplicates: {dup}
+                                                | Points: {p}'''.format(
                                                    player = key,
                                                    correct = ' '.join(map(str, suitable_and_existing)),
                                                    not_nested = ' '.join(map(str, unsuitable_words)),
