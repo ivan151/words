@@ -6,6 +6,7 @@ import time
 from openpyxl import Workbook, load_workbook
 import os.path
 from langdetect import detect
+import sys
 
 # import datetime
 
@@ -188,11 +189,12 @@ def telegram_webhook():
                     mins = 0
                     while mins < 5:
                         bot.sendMessage(chat_id, 'Word: {} >>>>>>>> {} minutes left'.format(word,mins))
-                      """  time.sleep(35)
+                        time.sleep(60)
                         mins += 1
                     else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
+                        sys.exit()
 
                 if "/startrus" in text:
                     # bot gives a word to players
@@ -208,6 +210,8 @@ def telegram_webhook():
                     else:
                         insert_stop_time(chat_id, word)
                         bot.sendMessage(chat_id, 'Time is over!')
+                        sys,exit()
+                    
                 elif text == '/result':
                     try:
                         words = get_result(chat_id)

@@ -1,30 +1,24 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Apr  2 00:14:17 2020
+from random import random
+import threading
+import time
 
-@author: ivanmankos
-"""
+result = None
 
-from langdetect import detect
+def background_calculation():
+    # here goes some long calculation
+    time.sleep(60)
 
+    # when the calculation is done, the result is stored in a global variable
+    global result
+    result = 40
 
-def whether_exists(word):
-    lang = detect(word)
-    if lang == 'en':
-        word = word.lower() + '\n'
-        with open('words.txt', 'r') as file:
-            words = file.readlines()
-            if word in words:
-                return (True, word)
-            else:
-                return (False, word)
-    else:
-        word = word.lower() + '\n'
-        with open('rus.txt', 'r') as file:
-            words = file.readlines()
-            print(words[:40])
-            if word in words:
-                return (True, word)
-            else:
-                return (False, word)
+def main():
+    thread = threading.Thread(target=background_calculation)
+    thread.start()
+
+    # TODO: wait here for the result to be available before continuing!
+
+    print('The result is', result)
+    
+if __name__ == '__main__':
+    main()
